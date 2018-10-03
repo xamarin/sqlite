@@ -18,7 +18,7 @@ and the following procedure should be followed:
    * Commit the changes
    * Apply `Android.patch` to the `dist` directory:
           
-	 $ cd dist
+         $ cd dist
          $ patch -p1 < Android.patch
 	
    * If there are hunks which failed to apply, fix them
