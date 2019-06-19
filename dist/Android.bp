@@ -40,6 +40,10 @@ cc_defaults {
         "-DBIONIC_IOCTL_NO_SIGNEDNESS_OVERLOAD",
         "-Wno-unused-parameter",
         "-Werror",
+
+        // Turn off the new pass manager due to miscompile.
+        // http://b/131854833
+        "-fno-experimental-new-pass-manager",
     ],
 
     target: {
@@ -68,6 +72,7 @@ cc_library {
     name: "libsqlite",
     defaults: ["sqlite-defaults"],
     vendor_available: true,
+    native_bridge_supported: true,
     vndk: {
         enabled: true,
     },
@@ -132,9 +137,6 @@ cc_binary {
                 "libandroidicu",
                 "liblog",
                 "libutils",
-            ],
-            static_libs: [
-                "libicuandroid_utils",
             ],
         },
         host: {
