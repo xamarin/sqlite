@@ -1,0 +1,6 @@
+The contents of the `dist` directory are from SQLite Consortium members,
+with copyright disclaimed.  Please see `dist/NOTICE` for details.
+
+The contents of the `android` directory are from the The Android Open Source
+Project, and are redistributed under the Apache 2.0 license.
+Please see `android/NOTICE` for details.
