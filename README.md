@@ -7,7 +7,7 @@ merging its master branch into ours:
     $ git remote add upstream https://android.googlesource.com/platform/external/sqlite/
     $ git fetch upstream
     $ git merge upstream/master
-    $ git push -m "Synchronized with Google upstream master branch"
+    $ git push
 
 We do not use the `master` branch for anything else than to keep it in sync with Google upstream. Whenever there's a
 need to update SQLite version a new branch named after the SQLite version should be created off of the `master` branch
