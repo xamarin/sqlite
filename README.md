@@ -23,7 +23,7 @@ the following procedure should be followed:
    * Apply `Android.patch` to the `dist` directory:
 
          $ cd dist
-         $ patch -p2 < Android.patch
+         $ patch -p0 < Android.patch
 	
    * If there are hunks which failed to apply, fix them
    * Update `Android.patch`:
