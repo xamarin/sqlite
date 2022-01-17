@@ -1,6 +1,8 @@
---- orig/shell.c	2021-07-12 20:54:40.989319871 +0100
-+++ shell.c	2021-07-12 20:54:51.609392247 +0100
-@@ -95,6 +95,11 @@
+diff --git a/dist/shell.c b/dist/shell.c
+index 26c0ae5..07292bb 100644
+--- a/dist/shell.c
++++ b/dist/shell.c
+@@ -107,6 +107,11 @@ typedef unsigned char u8;
  #endif
  #include <ctype.h>
  #include <stdarg.h>
@@ -12,7 +14,7 @@
  
  #if !defined(_WIN32) && !defined(WIN32)
  # include <signal.h>
-@@ -12957,6 +12962,22 @@
+@@ -15809,6 +15814,22 @@ static void open_db(ShellState *p, int openFlags){
      sqlite3_create_function(p->db, "edit", 2, SQLITE_UTF8, 0,
                              editFunc, 0, 0);
  #endif
@@ -34,10 +36,12 @@
 +
      if( p->openMode==SHELL_OPEN_ZIPFILE ){
        char *zSql = sqlite3_mprintf(
-          "CREATE VIRTUAL TABLE zip USING zipfile(%Q);", p->zDbFilename);
---- orig/sqlite3.c	2021-07-12 20:54:40.969319735 +0100
-+++ sqlite3.c	2021-07-12 20:54:51.609392247 +0100
-@@ -33407,6 +33407,10 @@
+          "CREATE VIRTUAL TABLE zip USING zipfile(%Q);", zDbFilename);
+diff --git a/dist/sqlite3.c b/dist/sqlite3.c
+index 62f197d..7c25e49 100644
+--- a/dist/sqlite3.c
++++ b/dist/sqlite3.c
+@@ -34379,6 +34379,10 @@ SQLITE_PRIVATE const char *sqlite3OpcodeName(int i){
  # include <sys/mount.h>
  #endif
  
@@ -48,7 +52,7 @@
  #ifdef HAVE_UTIME
  # include <utime.h>
  #endif
-@@ -34167,6 +34171,12 @@
+@@ -34941,6 +34945,12 @@ static int robust_open(const char *z, int f, mode_t m){
  #if defined(FD_CLOEXEC) && (!defined(O_CLOEXEC) || O_CLOEXEC==0)
      osFcntl(fd, F_SETFD, osFcntl(fd, F_GETFD, 0) | FD_CLOEXEC);
  #endif
@@ -61,7 +65,7 @@
    }
    return fd;
  }
-@@ -34747,7 +34757,13 @@
+@@ -35521,7 +35531,13 @@ static int unixLogErrorAtLine(
  ** and move on.
  */
  static void robust_close(unixFile *pFile, int h, int lineno){
@@ -75,7 +79,7 @@
      unixLogErrorAtLine(SQLITE_IOERR_CLOSE, "close",
                         pFile ? pFile->zPath : 0, lineno);
    }
-@@ -37281,7 +37297,7 @@
+@@ -38076,7 +38092,7 @@ static int unixFileSize(sqlite3_file *id, i64 *pSize){
    SimulateIOError( rc=1 );
    if( rc!=0 ){
      storeLastErrno((unixFile*)id, errno);
@@ -84,16 +88,16 @@
    }
    *pSize = buf.st_size;
  
-@@ -37317,7 +37333,7 @@
+@@ -38112,7 +38128,7 @@ static int fcntlSizeHint(unixFile *pFile, i64 nByte){
      struct stat buf;              /* Used to hold return values of fstat() */
-    
+ 
      if( osFstat(pFile->h, &buf) ){
 -      return SQLITE_IOERR_FSTAT;
 +      return unixLogError(SQLITE_IOERR_FSTAT, "fstat", pFile->zPath);
      }
  
      nSize = ((nByte+pFile->szChunk-1) / pFile->szChunk) * pFile->szChunk;
-@@ -38012,7 +38028,7 @@
+@@ -38854,7 +38870,7 @@ static int unixOpenSharedMemory(unixFile *pDbFd){
      ** with the same permissions.
      */
      if( osFstat(pDbFd->h, &sStat) ){
@@ -102,7 +106,7 @@
        goto shm_open_err;
      }
  
-@@ -128302,7 +128318,7 @@
+@@ -132569,7 +132585,7 @@ SQLITE_PRIVATE int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg, u32 mFl
    }
    if( pDb->pSchema->file_format>SQLITE_MAX_FILE_FORMAT ){
      sqlite3SetString(pzErrMsg, db, "unsupported file format");
@@ -111,10 +115,10 @@
      goto initone_error_out;
    }
  
-@@ -170259,13 +170275,25 @@
+@@ -176741,13 +176757,25 @@ SQLITE_PRIVATE int sqlite3Fts3Init(sqlite3 *db){
    ** module with sqlite.
    */
-   if( SQLITE_OK==rc 
+   if( SQLITE_OK==rc
 +#ifndef ANDROID    /* fts3_tokenizer disabled for security reasons */
     && SQLITE_OK==(rc = sqlite3Fts3InitHashTable(db, pHash, "fts3_tokenizer"))
 +#endif
